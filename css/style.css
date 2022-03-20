@@ -1,0 +1,186 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+    "Helvetica Neue", sans-serif;
+  margin: 0;
+  background: #fff;
+}
+
+.main--horizontal {
+  display: flex;
+  gap: 1rem;
+  overflow-x: scroll;
+  padding: 1rem;
+  padding-top: 0;
+  scroll-snap-type: x mandatory;
+  align-items: flex-start;
+}
+
+.header {
+  margin: 1rem;
+}
+
+.header__ex-name {
+  color: #999;
+  text-decoration: line-through;
+  text-align: center;
+  line-height: 1;
+}
+
+.header__logo {
+  letter-spacing: -0.045rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.main--horizontal .soundboard {
+  width: calc(100vw - 6rem);
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
+
+.soundboard__header {
+  position: relative;
+  background-color: #000;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.soundboard__image {
+  display: block;
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
+.soundboard__title {
+  color: #fff;
+  position: absolute;
+  margin: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+}
+
+.soundboard__source-link {
+  display: block;
+  position: absolute;
+  bottom: 0.8rem;
+  right: 1rem;
+  opacity: 0.7;
+}
+
+.soundboard__source-link:hover {
+  opacity: 1;
+}
+
+.soundboard__source-icon {
+  display: block;
+  fill: #fff;
+}
+
+.sounds {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sounds__item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: all 100ms ease;
+  background-color: #eee;
+  border-radius: 6px;
+}
+
+.sounds__item:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.sounds__item--is-playing {
+  background-color: #333;
+  border-color: #333;
+  color: #fff;
+}
+
+.sounds__item--is-playing::after {
+  content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="white" d="M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm11.008 2.093c.742.743 1.2 1.77 1.198 2.903-.002 1.133-.462 2.158-1.205 2.9l1.219 1.223c1.057-1.053 1.712-2.511 1.715-4.121.002-1.611-.648-3.068-1.702-4.125l-1.225 1.22zm2.142-2.135c1.288 1.292 2.082 3.073 2.079 5.041s-.804 3.75-2.096 5.039l1.25 1.254c1.612-1.608 2.613-3.834 2.616-6.291.005-2.457-.986-4.681-2.595-6.293l-1.254 1.25z"/></svg>');
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.sounds__button,
+.sounds__key {
+  display: block;
+  border: 0;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sounds__button {
+  font-size: 1rem;
+  flex-grow: 1;
+  text-align: left;
+  padding: 1rem;
+  background-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sounds__item--is-playing .sounds__button {
+  color: #fff;
+}
+
+.sounds__key {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background-color: #fff;
+  border-radius: 0.2rem;
+  padding: 0.3rem 0.5rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  transition: all 100ms ease;
+  order: 1; /* This keeps sound key at the right-hand side when audio is playing and the speaker icon appears. */
+}
+
+.sounds__key--is-binding {
+  transform-origin: center right;
+  transform: scale(1.6);
+}
+
+.sounds__item--is-playing .sounds__key {
+  background-color: #111;
+  color: #fff;
+}
+
+.footer {
+  margin: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.footer__link {
+  text-decoration: none;
+}
+
+@media (min-width: 600px) {
+  .main--horizontal {
+    scroll-snap-type: none;
+  }
+
+  .main--horizontal .soundboard {
+    width: 24rem;
+  }
+}
