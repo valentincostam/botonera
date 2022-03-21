@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Botonera</title>
+    <title>Botonear</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" />
@@ -12,9 +12,10 @@
   </head>
   <body>
     <header class="header">
-      <div class="header__ex-name">Botonear</div>
-      <h1 class="header__logo">Botonera</h1>
+      <div class="header__ex-name">Botonera</div>
+      <h1 class="header__logo">Botonear</h1>
     </header>
+    <button class="stop-button stop-button--is-hidden">Parar sonidos</button>
     <main class="main main--horizontal">
       <article class="soundboard">
         <div class="soundboard__header">
@@ -104,7 +105,7 @@
             <audio src="./sounds/sos-inimputable/sos-inimputable-14.mp3"></audio>
           </li>
           <li class="sounds__item" id="sos-inimputable-15">
-            <button class="sounds__button">Te tomás media bottela</button>
+            <button class="sounds__button">Te tomás media botella</button>
             <button class="sounds__key">?</button>
             <audio src="./sounds/sos-inimputable/sos-inimputable-15.mp3"></audio>
           </li>
@@ -325,7 +326,13 @@
       </article>
     </main>
     <footer class="footer">
-      Hecho por <a href="https://valentincosta.com" class="footer__link"><strong>Valentín Costa</strong></a>
+      <label class="enable-hotkeys-label" for="enable-hotkeys">
+        <input class="enable-hotkeys-checkbox" type="checkbox" id="enable-hotkeys" checked />
+        Habilitar atajos de teclado
+      </label>
+      <p class="footer__author">
+        Hecho por <a href="https://valentincosta.com" class="footer__link"><strong>Valentín Costa</strong></a>
+      </p>
     </footer>
     <script src="js/index.js"></script>
   </body>

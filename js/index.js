@@ -4,46 +4,14 @@ const playingAudios = new Set()
 
 const soundItems = Array.from(document.querySelectorAll(".sounds__item"))
 
-let soundItemBeingKeyBound = null
+const stopButton = document.querySelector(".stop-button")
+const enableHotkeysCheckbox = document.querySelector(".enable-hotkeys-checkbox")
 
+let areHotkeysEnabled = true
+let soundItemBeingKeyBound = null
 let soundsKeyBindings = null
 
-// const DEFAULT_SOUNDS_KEY_BINDINGS = {
-//   "coca-1": { keyText: "Q", keyCode: "KeyQ" },
-//   "coca-2": { keyText: "W", keyCode: "KeyW" },
-//   "coca-3": { keyText: "E", keyCode: "KeyE" },
-//   "coca-4": { keyText: "R", keyCode: "KeyR" },
-//   "coca-5": { keyText: "A", keyCode: "KeyA" },
-//   "coca-6": { keyText: "S", keyCode: "KeyS" },
-//   "coca-7": { keyText: "D", keyCode: "KeyD" },
-//   "coca-8": { keyText: "F", keyCode: "KeyF" },
-//   "coca-9": { keyText: "Z", keyCode: "KeyZ" },
-//   "coca-10": { keyText: "X", keyCode: "KeyX" },
-//   "personaje-tc-01": { keyText: "?", keyCode: "" },
-//   "personaje-tc-02": { keyText: "?", keyCode: "" },
-//   "personaje-tc-03": { keyText: "?", keyCode: "" },
-//   "personaje-tc-04": { keyText: "?", keyCode: "" },
-//   "personaje-tc-05": { keyText: "?", keyCode: "" },
-//   "personaje-tc-06": { keyText: "?", keyCode: "" },
-//   "personaje-tc-07": { keyText: "?", keyCode: "" },
-//   "personaje-tc-08": { keyText: "?", keyCode: "" },
-//   "personaje-tc-09": { keyText: "?", keyCode: "" },
-//   "personaje-tc-10": { keyText: "?", keyCode: "" },
-//   "personaje-tc-11": { keyText: "?", keyCode: "" },
-//   "personaje-tc-12": { keyText: "?", keyCode: "" },
-//   "personaje-tc-13": { keyText: "?", keyCode: "" },
-//   "personaje-tc-14": { keyText: "?", keyCode: "" },
-//   "personaje-tc-15": { keyText: "?", keyCode: "" },
-//   "personaje-tc-16": { keyText: "?", keyCode: "" },
-//   "personaje-tc-17": { keyText: "?", keyCode: "" },
-//   "personaje-tc-18": { keyText: "?", keyCode: "" },
-//   "personaje-tc-19": { keyText: "?", keyCode: "" },
-//   "personaje-tc-20": { keyText: "?", keyCode: "" },
-//   "personaje-tc-21": { keyText: "?", keyCode: "" },
-//   "personaje-tc-22": { keyText: "?", keyCode: "" },
-// }
-
-const FORBIDDEN_KEYS = ["Enter", "Space", "Escape", "Tab"]
+const FORBIDDEN_KEYS = ["Enter", "Space", "Escape", "Tab", "ShiftLeft", "ShiftRight"]
 
 function updateDocumentTitle() {
   if (playingAudios.size === 0) {
@@ -76,6 +44,7 @@ async function playSound(soundItem) {
 
     playingAudios.add(audio)
     soundItem.classList.add("sounds__item--is-playing")
+    stopButton.classList.remove("stop-button--is-hidden")
     updateDocumentTitle()
 
     // Whenever the audio pause, remove it from playing audios set,
@@ -86,6 +55,10 @@ async function playSound(soundItem) {
         playingAudios.delete(audio)
         soundItem.classList.remove("sounds__item--is-playing")
         updateDocumentTitle()
+
+        if (playingAudios.size === 0) {
+          stopButton.classList.add("stop-button--is-hidden")
+        }
       },
       { once: true }
     )
@@ -143,7 +116,9 @@ function stopPlayingAudios() {
   })
 }
 
-function handleKeyDown(event) {
+function handleKeyUp(event) {
+  if (!areHotkeysEnabled) return
+
   const keyCode = event.code === "" ? event.key : event.code
   const keyText = event.key === " " ? keyCode : event.key
 
@@ -203,6 +178,17 @@ function getDefaulKeyBindings() {
   return defaultKeyBindings
 }
 
+function toggleHotkeys() {
+  areHotkeysEnabled = !areHotkeysEnabled
+
+  soundItems.forEach((soundItem) => {
+    const soundKey = soundItem.querySelector(".sounds__key")
+    soundKey.classList.toggle("sounds__key--is-hidden")
+  })
+
+  stopButton.classList.toggle("stop-button--without-hotkey")
+}
+
 function initialize() {
   soundsKeyBindings = JSON.parse(localStorage.getItem("soundsKeyBindings")) ?? getDefaulKeyBindings()
 
@@ -214,7 +200,10 @@ function initialize() {
     soundItem.addEventListener("click", handleClick)
   })
 
-  window.addEventListener("keydown", handleKeyDown)
+  stopButton.addEventListener("click", stopPlayingAudios)
+  enableHotkeysCheckbox.addEventListener("change", toggleHotkeys)
+
+  window.addEventListener("keyup", handleKeyUp)
   window.addEventListener("click", cancelKeyBinding)
 }
 

@@ -12,11 +12,21 @@ body {
 .main--horizontal {
   display: flex;
   gap: 1rem;
-  overflow-x: scroll;
-  padding: 1rem;
-  padding-top: 0;
+  overflow-x: auto;
+  padding-bottom: 1rem;
   scroll-snap-type: x mandatory;
   align-items: flex-start;
+}
+
+/*
+  Adds fake padding-left and padding-right since they doesn't work on some browsers.
+  More details (in Spanish): https://twitter.com/valentincostam/status/1339386955184926720
+*/
+.main--horizontal::before,
+.main--horizontal::after {
+  content: "";
+  display: table;
+  height: 1rem;
 }
 
 .header {
@@ -38,8 +48,63 @@ body {
   line-height: 1;
 }
 
+.stop-button {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  border: 0;
+  background-color: #eee;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  line-height: 1;
+  font-size: 1rem;
+  white-space: nowrap;
+  box-shadow: rgb(0 0 0 / 8%) 0 0 0 1px, rgb(0 0 0 / 5%) 0 10px 10px -5px;
+  z-index: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.stop-button--is-hidden {
+  display: none;
+}
+
+.stop-button::before {
+  content: "";
+  display: block;
+  width: 0.8rem;
+  height: 0.8rem;
+  background-color: #333;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+/*
+  Used a pseudo-element for this since theoretically
+  you can't put another element within a button.
+*/
+.stop-button::after {
+  content: "Escape";
+  display: block;
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 0.8rem;
+  background-color: #fff;
+  border-radius: 0.2rem;
+  padding: 0.3rem 0.5rem;
+  margin-left: 1rem;
+}
+
+.stop-button--without-hotkey::after {
+  display: none;
+}
+
 .main--horizontal .soundboard {
-  width: calc(100vw - 6rem);
+  width: calc(100vw - 4rem);
   flex-shrink: 0;
   scroll-snap-align: center;
 }
@@ -101,23 +166,45 @@ body {
   transition: all 100ms ease;
   background-color: #eee;
   border-radius: 6px;
+  overflow: hidden;
+  padding-right: 1rem;
+}
+
+@keyframes rainbow {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.sounds__item:hover {
+  background-color: #eef;
+  animation: rainbow 1.5s linear infinite;
+}
+
+.sounds__item:focus-within {
+  box-shadow: rgb(0 0 0 / 20%) 0 0 0 3px;
 }
 
 .sounds__item:not(:last-child) {
   margin-bottom: 0.5rem;
 }
 
-.sounds__item--is-playing {
+.sounds__item--is-playing,
+.sounds__item--is-playing:hover {
   background-color: #333;
   border-color: #333;
   color: #fff;
+  animation: none;
 }
 
 .sounds__item--is-playing::after {
   content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="white" d="M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm11.008 2.093c.742.743 1.2 1.77 1.198 2.903-.002 1.133-.462 2.158-1.205 2.9l1.219 1.223c1.057-1.053 1.712-2.511 1.715-4.121.002-1.611-.648-3.068-1.702-4.125l-1.225 1.22zm2.142-2.135c1.288 1.292 2.082 3.073 2.079 5.041s-.804 3.75-2.096 5.039l1.25 1.254c1.612-1.608 2.613-3.834 2.616-6.291.005-2.457-.986-4.681-2.595-6.293l-1.254 1.25z"/></svg>');
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .sounds__button,
@@ -126,6 +213,12 @@ body {
   border: 0;
   line-height: 1;
   cursor: pointer;
+  user-select: none;
+}
+
+.sounds__button:focus,
+.sounds__key:focus {
+  outline: 0;
 }
 
 .sounds__button {
@@ -137,6 +230,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #333;
 }
 
 .sounds__item--is-playing .sounds__button {
@@ -149,15 +243,24 @@ body {
   background-color: #fff;
   border-radius: 0.2rem;
   padding: 0.3rem 0.5rem;
-  margin-right: 1rem;
   flex-shrink: 0;
   transition: all 100ms ease;
-  order: 1; /* This keeps sound key at the right-hand side when audio is playing and the speaker icon appears. */
+  /* This keeps sound key at the right-hand side
+  when audio is playing and the speaker icon appears. */
+  order: 1;
+}
+
+.sounds__key:focus {
+  box-shadow: rgb(0 0 0 / 20%) 0 0 0 3px;
 }
 
 .sounds__key--is-binding {
   transform-origin: center right;
   transform: scale(1.6);
+}
+
+.sounds__key--is-hidden {
+  display: none;
 }
 
 .sounds__item--is-playing .sounds__key {
@@ -166,13 +269,49 @@ body {
 }
 
 .footer {
-  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 1rem;
   font-size: 0.9rem;
   text-align: center;
 }
 
+.footer__author {
+  margin: 0;
+  margin-top: 2rem;
+}
+
 .footer__link {
   text-decoration: none;
+  color: #333;
+}
+
+.footer__link:hover {
+  border-bottom: 3px solid #555;
+}
+
+.enable-hotkeys-label {
+  display: flex;
+  align-items: center;
+  background-color: #eee;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.enable-hotkeys-label:focus-within {
+  box-shadow: rgb(0 0 0 / 20%) 0 0 0 3px;
+}
+
+.enable-hotkeys-checkbox {
+  margin: 0;
+  margin-right: 0.5rem;
+}
+
+.enable-hotkeys-checkbox:focus {
+  outline: 0;
 }
 
 @media (min-width: 600px) {
