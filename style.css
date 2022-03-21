@@ -186,8 +186,6 @@ body {
 }
 
 .sounds__item:focus-within {
-  background-color: #eee;
-  animation: none;
   box-shadow: rgb(0 0 0 / 20%) 0 0 0 3px;
 }
 
