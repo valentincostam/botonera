@@ -14,7 +14,7 @@ body {
   gap: 1rem;
   overflow-x: auto;
   padding-bottom: 1rem;
-  /* scroll-snap-type: x mandatory; */
+  scroll-snap-type: x mandatory;
   align-items: flex-start;
 }
 
@@ -67,6 +67,7 @@ body {
   z-index: 1;
   cursor: pointer;
   user-select: none;
+  color: #333;
 }
 
 .stop-button--is-hidden {
@@ -216,6 +217,7 @@ body {
   line-height: 1;
   cursor: pointer;
   user-select: none;
+  color: #333;
 }
 
 .sounds__button:focus,
@@ -232,7 +234,6 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #333;
 }
 
 .sounds__item--is-playing .sounds__button {
